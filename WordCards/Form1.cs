@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -30,6 +31,16 @@ namespace WordCards
         /// </summary>
         bool isPlay = false;
 
+        // 美化用顏色
+        private readonly Color colorBackground = Color.FromArgb(248, 250, 252);
+        private readonly Color colorCard = Color.FromArgb(255, 255, 255);
+        private readonly Color colorPrimary = Color.FromArgb(37, 99, 235);
+        private readonly Color colorPrimaryDark = Color.FromArgb(29, 78, 216);
+        private readonly Color colorText = Color.FromArgb(30, 41, 59);
+        private readonly Color colorSubText = Color.FromArgb(100, 116, 139);
+        private readonly Color colorSelected = Color.FromArgb(219, 234, 254);
+        private readonly Color colorBorder = Color.FromArgb(226, 232, 240);
+
         public frmWordCards()
         {
             InitializeComponent();
@@ -44,6 +55,14 @@ namespace WordCards
             lstWordList.Click -= lstWordList_Click;
             lstWordList.Click += lstWordList_Click;
 
+            // 雙擊左邊單字清單，直接進入修改畫面
+            lstWordList.MouseDoubleClick -= lstWordList_MouseDoubleClick;
+            lstWordList.MouseDoubleClick += lstWordList_MouseDoubleClick;
+
+            // 左邊清單自訂繪製，讓 ListBox 更好看
+            lstWordList.DrawItem -= lstWordList_DrawItem;
+            lstWordList.DrawItem += lstWordList_DrawItem;
+
             btnAutoPlay.Click -= btnAutoPlay_Click;
             btnAutoPlay.Click += btnAutoPlay_Click;
 
@@ -52,6 +71,206 @@ namespace WordCards
 
             timPlayer.Tick -= timPlayer_Tick;
             timPlayer.Tick += timPlayer_Tick;
+        }
+
+        /// <summary>
+        /// 套用畫面美化
+        /// </summary>
+        private void ApplyTheme()
+        {
+            this.BackColor = colorBackground;
+            this.Font = new Font("Microsoft JhengHei UI", 10F, FontStyle.Regular);
+            this.StartPosition = FormStartPosition.CenterScreen;
+
+            // 左邊單字清單
+            lstWordList.BackColor = colorCard;
+            lstWordList.ForeColor = colorText;
+            lstWordList.BorderStyle = BorderStyle.FixedSingle;
+            lstWordList.Font = new Font("Segoe UI", 11F, FontStyle.Regular);
+            lstWordList.ItemHeight = 28;
+            lstWordList.DrawMode = DrawMode.OwnerDrawFixed;
+            lstWordList.IntegralHeight = false;
+
+            // 大單字
+            StyleDisplayControl(
+                txtWord,
+                new Font("Segoe UI", 48F, FontStyle.Bold),
+                colorPrimary,
+                colorBackground
+            );
+
+            // 音標
+            StyleDisplayControl(
+                txtPhonogram,
+                new Font("Segoe UI", 18F, FontStyle.Regular),
+                Color.FromArgb(22, 163, 74),
+                colorBackground
+            );
+
+            // 解釋
+            StyleDisplayControl(
+                txtExplain,
+                new Font("Microsoft JhengHei UI", 12F, FontStyle.Regular),
+                colorText,
+                colorBackground
+            );
+
+            // 按鈕
+            StyleButton(btnAutoPlay, colorPrimary, Color.White);
+            StyleButton(btnEditWord, Color.FromArgb(241, 245, 249), colorText);
+
+            btnAutoPlay.Text = "▶ Play";
+            btnEditWord.Text = "✎ 修改";
+
+            // 狀態列
+            if (tsslMessage != null)
+            {
+                tsslMessage.ForeColor = colorSubText;
+
+                if (tsslMessage.GetCurrentParent() != null)
+                {
+                    tsslMessage.GetCurrentParent().BackColor = Color.FromArgb(241, 245, 249);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 美化顯示文字的控制項
+        /// 可支援 Label / TextBox / RichTextBox
+        /// </summary>
+        private void StyleDisplayControl(Control ctrl, Font font, Color foreColor, Color backColor)
+        {
+            if (ctrl == null)
+                return;
+
+            ctrl.Font = font;
+            ctrl.ForeColor = foreColor;
+            ctrl.BackColor = backColor;
+
+            if (ctrl is TextBoxBase textBox)
+            {
+                textBox.BorderStyle = BorderStyle.None;
+                textBox.ReadOnly = true;
+            }
+
+            if (ctrl is Label label)
+            {
+                label.AutoSize = false;
+                label.BackColor = backColor;
+            }
+        }
+
+        /// <summary>
+        /// 美化按鈕
+        /// </summary>
+        private void StyleButton(Button btn, Color backColor, Color foreColor)
+        {
+            if (btn == null)
+                return;
+
+            btn.FlatStyle = FlatStyle.Flat;
+            btn.FlatAppearance.BorderSize = 0;
+            btn.BackColor = backColor;
+            btn.ForeColor = foreColor;
+            btn.Font = new Font("Microsoft JhengHei UI", 12F, FontStyle.Bold);
+            btn.Cursor = Cursors.Hand;
+            btn.UseVisualStyleBackColor = false;
+
+            btn.MouseEnter -= Button_MouseEnter;
+            btn.MouseEnter += Button_MouseEnter;
+
+            btn.MouseLeave -= Button_MouseLeave;
+            btn.MouseLeave += Button_MouseLeave;
+        }
+
+        /// <summary>
+        /// 按鈕滑鼠移入效果
+        /// </summary>
+        private void Button_MouseEnter(object sender, EventArgs e)
+        {
+            Button btn = sender as Button;
+
+            if (btn == null)
+                return;
+
+            if (btn == btnAutoPlay)
+            {
+                btn.BackColor = colorPrimaryDark;
+            }
+            else if (btn == btnEditWord)
+            {
+                btn.BackColor = Color.FromArgb(226, 232, 240);
+            }
+        }
+
+        /// <summary>
+        /// 按鈕滑鼠移出效果
+        /// </summary>
+        private void Button_MouseLeave(object sender, EventArgs e)
+        {
+            Button btn = sender as Button;
+
+            if (btn == null)
+                return;
+
+            if (btn == btnAutoPlay)
+            {
+                btn.BackColor = colorPrimary;
+            }
+            else if (btn == btnEditWord)
+            {
+                btn.BackColor = Color.FromArgb(241, 245, 249);
+            }
+        }
+
+        /// <summary>
+        /// 自訂繪製左邊單字清單
+        /// </summary>
+        private void lstWordList_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            if (e.Index < 0)
+                return;
+
+            bool isSelected = (e.State & DrawItemState.Selected) == DrawItemState.Selected;
+
+            Rectangle bounds = e.Bounds;
+
+            Color backColor = isSelected ? colorSelected : colorCard;
+            Color foreColor = isSelected ? colorPrimary : colorText;
+
+            using (SolidBrush backBrush = new SolidBrush(backColor))
+            {
+                e.Graphics.FillRectangle(backBrush, bounds);
+            }
+
+            // 選取時左邊加一條藍線
+            if (isSelected)
+            {
+                using (SolidBrush accentBrush = new SolidBrush(colorPrimary))
+                {
+                    e.Graphics.FillRectangle(accentBrush, bounds.X, bounds.Y, 4, bounds.Height);
+                }
+            }
+
+            string text = lstWordList.Items[e.Index].ToString();
+
+            Rectangle textRect = new Rectangle(
+                bounds.X + 10,
+                bounds.Y,
+                bounds.Width - 15,
+                bounds.Height
+            );
+
+            TextRenderer.DrawText(
+                e.Graphics,
+                text,
+                lstWordList.Font,
+                textRect,
+                foreColor,
+                TextFormatFlags.VerticalCenter | TextFormatFlags.Left | TextFormatFlags.EndEllipsis
+            );
+
+            e.DrawFocusRectangle();
         }
 
         /// <summary>
@@ -175,8 +394,11 @@ namespace WordCards
         {
             this.KeyPreview = true;
 
+            // 套用美化
+            ApplyTheme();
+
             timPlayer.Interval = 2000;
-            btnAutoPlay.Text = "Play";
+            btnAutoPlay.Text = "▶ Play";
 
             string wordFilePath = Path.Combine(Application.StartupPath, strWordFile);
 
@@ -230,6 +452,23 @@ namespace WordCards
         }
 
         /// <summary>
+        /// 雙擊左邊單字清單時，跳到修改畫面
+        /// </summary>
+        private void lstWordList_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            int idx = lstWordList.IndexFromPoint(e.Location);
+
+            // 避免雙擊空白處也觸發修改
+            if (idx == ListBox.NoMatches)
+                return;
+
+            lstWordList.SelectedIndex = idx;
+
+            // 直接使用原本「修改」按鈕的功能
+            btnEditWord.PerformClick();
+        }
+
+        /// <summary>
         /// 自動播放按鈕
         /// </summary>
         private void btnAutoPlay_Click(object sender, EventArgs e)
@@ -244,7 +483,7 @@ namespace WordCards
 
             if (isPlay == false)
             {
-                btnAutoPlay.Text = "Stop";
+                btnAutoPlay.Text = "⏸ Stop";
                 isPlay = true;
 
                 PlaySelectedWord();
@@ -253,7 +492,7 @@ namespace WordCards
             }
             else
             {
-                btnAutoPlay.Text = "Play";
+                btnAutoPlay.Text = "▶ Play";
                 isPlay = false;
 
                 timPlayer.Stop();

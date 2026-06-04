@@ -32,6 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmWordCards));
             this.lstWordList = new System.Windows.Forms.ListBox();
             this.palMain = new System.Windows.Forms.Panel();
+            this.btnEditWord = new System.Windows.Forms.Button();
             this.sssWord = new System.Windows.Forms.StatusStrip();
             this.tsslMessage = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblHelp = new System.Windows.Forms.Label();
@@ -41,7 +42,6 @@
             this.txtExplain = new System.Windows.Forms.TextBox();
             this.txtWord = new System.Windows.Forms.TextBox();
             this.timPlayer = new System.Windows.Forms.Timer(this.components);
-            this.btnEditWord = new System.Windows.Forms.Button();
             this.palMain.SuspendLayout();
             this.sssWord.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picLogo)).BeginInit();
@@ -75,6 +75,16 @@
             this.palMain.Name = "palMain";
             this.palMain.Size = new System.Drawing.Size(1244, 687);
             this.palMain.TabIndex = 1;
+            // 
+            // btnEditWord
+            // 
+            this.btnEditWord.Location = new System.Drawing.Point(589, 491);
+            this.btnEditWord.Name = "btnEditWord";
+            this.btnEditWord.Size = new System.Drawing.Size(173, 72);
+            this.btnEditWord.TabIndex = 7;
+            this.btnEditWord.Text = "修改";
+            this.btnEditWord.UseVisualStyleBackColor = true;
+            this.btnEditWord.Click += new System.EventHandler(this.btnEditWord_Click);
             // 
             // sssWord
             // 
@@ -136,7 +146,7 @@
             this.txtPhonogram.Location = new System.Drawing.Point(22, 192);
             this.txtPhonogram.Name = "txtPhonogram";
             this.txtPhonogram.ReadOnly = true;
-            this.txtPhonogram.Size = new System.Drawing.Size(1198, 46);
+            this.txtPhonogram.Size = new System.Drawing.Size(394, 46);
             this.txtPhonogram.TabIndex = 2;
             this.txtPhonogram.Text = "ˋæbəkəs";
             // 
@@ -153,7 +163,7 @@
             this.txtExplain.Multiline = true;
             this.txtExplain.Name = "txtExplain";
             this.txtExplain.ReadOnly = true;
-            this.txtExplain.Size = new System.Drawing.Size(1202, 228);
+            this.txtExplain.Size = new System.Drawing.Size(562, 228);
             this.txtExplain.TabIndex = 1;
             this.txtExplain.Text = "<-us: calculus 小圓石>";
             // 
@@ -168,23 +178,13 @@
             this.txtWord.Location = new System.Drawing.Point(22, 23);
             this.txtWord.Name = "txtWord";
             this.txtWord.ReadOnly = true;
-            this.txtWord.Size = new System.Drawing.Size(1155, 163);
+            this.txtWord.Size = new System.Drawing.Size(489, 163);
             this.txtWord.TabIndex = 0;
             this.txtWord.Text = "abacus";
             // 
             // timPlayer
             // 
             this.timPlayer.Interval = 2000;
-            // 
-            // btnEditWord
-            // 
-            this.btnEditWord.Location = new System.Drawing.Point(589, 491);
-            this.btnEditWord.Name = "btnEditWord";
-            this.btnEditWord.Size = new System.Drawing.Size(173, 72);
-            this.btnEditWord.TabIndex = 7;
-            this.btnEditWord.Text = "修改";
-            this.btnEditWord.UseVisualStyleBackColor = true;
-            this.btnEditWord.Click += new System.EventHandler(this.btnEditWord_Click);
             // 
             // frmWordCards
             // 
