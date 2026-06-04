@@ -11,7 +11,8 @@ WordCards 是一個使用 C# Windows Forms 製作的單字卡程式。
 
 
 
-<img width="1085" height="533" alt="螢幕擷取畫面 2026-06-03 110624" src="https://github.com/user-attachments/assets/460b6f48-375d-4529-b584-43f7786b1669" />
+<img width="1132" height="550" alt="螢幕擷取畫面 2026-06-04 163739" src="https://github.com/user-attachments/assets/d03eb11e-7576-436c-9a38-ce07d7797a4b" />
+
 
 
 
